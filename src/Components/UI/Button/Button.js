@@ -49,4 +49,4 @@ const Button = React.forwardRef((props,Ref) => {
   )
 });
 
-export default Button
+export default React.memo(Button);

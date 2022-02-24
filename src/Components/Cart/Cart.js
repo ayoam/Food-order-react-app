@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import styled from 'styled-components'
 import CartItem from '../CartItem/CartItem.js';
 import Button from '../UI/Button/Button';
@@ -101,7 +101,7 @@ const Cart = (props) => {
   const orderBtnClickHandler = ()=>{
     props.onSetIsOrdered(true);
     closeBtnRef.current.click();
-    SetCartItems([]);
+    // SetCartItems([]);
   }
 
   return (
@@ -122,7 +122,7 @@ const Cart = (props) => {
               </div>
             </div>
             <div className="modal-footer">
-                <Button text="Order" onClick={orderBtnClickHandler}/>
+                <Button text="Order" onClick={orderBtnClickHandler} disabled={CartItems.length==0}/>
                 <Button text="Close" ref={closeBtnRef} onClick={()=>props.onSetShowCart(false)}/>
             </div>
         </div>

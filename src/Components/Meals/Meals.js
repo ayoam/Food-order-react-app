@@ -14,17 +14,15 @@ const Wrapper= styled.ul`
 `;
 
 const Meals = (props) => {
-  const {MealsList} = useContext(MealsContext);
+  const {MealsList,error,isLoading} = useContext(MealsContext);
   return (
     <Wrapper>
       <Card className="Card">
-        {
-          MealsList.map(item=><MealItem key={generateKey()} MealData={item}/>)
-        }
-        
+        {error!=null?<p style={{textAlign:'center'}}>{error}</p>:""}
+        {(isLoading && error==null)?<p style={{textAlign:'center'}}>Loading...</p>:MealsList.map(item=><MealItem key={generateKey()} MealData={item}/>)}
       </Card>
     </Wrapper>
   )
 }
 
-export default Meals
+export default Meals;

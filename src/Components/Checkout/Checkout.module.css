@@ -1,0 +1,42 @@
+.card{
+  width:600px;
+  margin-top:30px !important;
+  padding: 20px;
+}
+
+.errorMessage{
+  /* display: none; */
+  font-style: italic;
+  color:red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  margin-left:150px;
+}
+
+.inputError{
+  background-color: rgba(255, 0, 0, 0.404);
+  border: 2px solid rgb(196, 2, 2) !important;
+}
+
+.form{
+  width: 80%;
+  margin: 0 auto;
+}
+
+.inputGroup{
+  margin: 20px 0;
+}
+
+.input{
+  padding: 5px 10px;
+  width: 250px;
+  height: 25px;
+  outline: none;
+  border: 1px solid black;
+  border-radius: 0.2rem;
+}
+
+.label{
+  display:inline-block;
+  width: 150px;
+}

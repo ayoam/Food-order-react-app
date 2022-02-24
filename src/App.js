@@ -4,9 +4,10 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import Meals from "./Components/Meals/Meals.js";
 import  Cart from "./Components/Cart/Cart.js"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MealsContext } from './store/Meals-context';
 import OrderComplete from './Components/OrderComplete/OrderComplete.js';
+import Checkout from './Components/Checkout/Checkout';
 
 const Header = styled.div`
   background-color:brown;
@@ -35,32 +36,60 @@ const Header = styled.div`
 
 function App() {
 
-  const [MealsList,SetMealsList] = useState([
-    {
-      id:'m1',
-      title:'Suchi',
-      description:'Finest fish and veggies',
-      price:22.99,
-    },
-    {
-      id:'m2',
-      title:'Schnitzel',
-      description:'A german speciality!',
-      price:16.50,
-    },
-    {
-      id:'m3',
-      title:'Barbecue Burger',
-      description:'American, Raw,meaty',
-      price:12.99,
-    },
-    {
-      id:'m4',
-      title:'Green bowl',
-      description:'Healty...and green...',
-      price:18.99,
+  const [MealsList,SetMealsList] = useState([]);
+  const [error,SetError]= useState(null);
+  const [isLoading,SetIsLoading] = useState(false);
+
+  const fetchMealsList= async()=>{
+    try{
+      SetIsLoading(true);
+      const response = await fetch("https://react-workspace-27f57-default-rtdb.firebaseio.com/Meals.json");
+      const data = await response.json();
+      if(data == null){
+        throw new Error("something went wrong");
+      }
+      const meals = []
+      for(let key in data){
+        meals.push({id:key,...data[key]});
+      }
+      SetMealsList(meals);
     }
-  ]);
+    catch(error){
+      SetError(error.message);
+    }
+    SetIsLoading(false);
+  }
+
+  useEffect(()=>{
+    fetchMealsList();
+  },[]);
+
+  // const [MealsList,SetMealsList] = useState([
+  //   {
+  //     id:'m1',
+  //     title:'Suchi',
+  //     description:'Finest fish and veggies',
+  //     price:22.99,
+  //   },
+  //   {
+  //     id:'m2',
+  //     title:'Schnitzel',
+  //     description:'A german speciality!',
+  //     price:16.50,
+  //   },
+  //   {
+  //     id:'m3',
+  //     title:'Barbecue Burger',
+  //     description:'American, Raw,meaty',
+  //     price:12.99,
+  //   },
+  //   {
+  //     id:'m4',
+  //     title:'Green bowl',
+  //     description:'Healty...and green...',
+  //     price:18.99,
+  //   }
+  // ]);
   
   const [CartItems,SetCartItems] = useState([
     // {
@@ -72,6 +101,7 @@ function App() {
 
   const [showCart,SetShowCart] = useState(false);
   const [isOrdered,SetIsOrdered] = useState(false);
+  const [orderIsConfirmed,SetOrderIsConfirmed] = useState(false);
 
   const cartCount = ()=>{
     let count = 0;
@@ -85,8 +115,12 @@ function App() {
     SetShowCart(true);
   }
 
+  const CheckOrderHandler= ()=>{
+    SetOrderIsConfirmed(true);
+  }
+
   return (
-    <MealsContext.Provider value={{CartItems,MealsList,SetCartItems,SetMealsList}}>
+    <MealsContext.Provider value={{CartItems,MealsList,SetCartItems,SetMealsList,error,isLoading}}>
       {ReactDOM.createPortal(
         <Header>
           <p>ReactMeals</p>
@@ -95,9 +129,9 @@ function App() {
         </Header>
         ,document.getElementById('header-root')
       )}
-    
-      {!isOrdered?<Meals MealsList={MealsList}/>:<OrderComplete/>}
-      
+      {(!orderIsConfirmed && isOrdered) && <Checkout onSaveCheckOrderHandler={CheckOrderHandler}/>}
+      {!isOrdered && <Meals MealsList={MealsList}/>}
+      {orderIsConfirmed && <OrderComplete/>}
     </MealsContext.Provider>
     );
 }
